@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddressForm from "../components/AddressForm";
 import PaymentOptions from "../components/PaymentOptions";
 
@@ -12,13 +12,29 @@ export default function CheckoutPage() {
 
   const [payment, setPayment] = useState("card");
   const [submitted, setSubmitted] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
+
+  // Load cart from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem("cart");
+    if (stored) {
+      setCartItems(JSON.parse(stored));
+    }
+  }, []);
+
+  const subtotal = cartItems.reduce((acc, item) => {
+    const price = item.price * (1 - item.discount / 100);
+    return acc + price * item.quantity;
+  }, 0);
 
   const handlePlaceOrder = () => {
     if (!address.name || !address.street || !address.city || !address.zip) {
       alert("Please fill in your address");
       return;
     }
+
     setSubmitted(true);
+    localStorage.removeItem("cart"); // Optional: Clear cart after order
   };
 
   if (submitted) {
@@ -47,9 +63,9 @@ export default function CheckoutPage() {
 
       <div className="mt-6 text-lg">
         <h2 className="text-xl font-semibold mb-2">Order Summary</h2>
-        <p>Items Total: $3000.00</p>
+        <p>Items Total: ${subtotal.toFixed(2)}</p>
         <p>Shipping: Free</p>
-        <p className="font-bold text-xl">Total: $3000.00</p>
+        <p className="font-bold text-xl">Total: ${subtotal.toFixed(2)}</p>
       </div>
 
       <button

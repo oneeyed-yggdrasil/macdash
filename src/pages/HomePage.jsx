@@ -1,6 +1,7 @@
+import { useState } from "react";
 import ProductCard from "../components/ProductCard";
 
-const featuredProducts = [
+const allProducts = [
   {
     id: 1,
     name: "MacBook Pro M3",
@@ -28,27 +29,38 @@ const featuredProducts = [
 ];
 
 export default function HomePage() {
-  const categories = ["MacBook", "iMac", "Mac Mini"];
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const categories = ["All", "MacBook", "iMac", "Mac Mini"];
+
+  const filteredProducts =
+    selectedCategory === "All"
+      ? allProducts
+      : allProducts.filter((p) => p.category === selectedCategory);
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Featured Products</h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-10">
-        {featuredProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
-
-      <h2 className="text-2xl font-semibold mb-4">Shop by Category</h2>
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-4 mb-8">
         {categories.map((cat) => (
           <button
             key={cat}
-            className="px-4 py-2 rounded-full border hover:bg-black hover:text-white transition"
+            onClick={() => setSelectedCategory(cat)}
+            className={`px-4 py-2 rounded-full border transition ${
+              selectedCategory === cat
+                ? "bg-black text-white"
+                : "hover:bg-gray-200"
+            }`}
           >
             {cat}
           </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {filteredProducts.map((product) => (
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </div>
