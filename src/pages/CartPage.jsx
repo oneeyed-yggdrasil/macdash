@@ -28,10 +28,16 @@ export default function CartPage() {
   const navigate = useNavigate();
   
   useEffect(() => {
-    // In real app, load from localStorage or API
-    setCartItems(fakeCart);
+    const storedCart = localStorage.getItem("cart");
+    if (storedCart) {
+      setCartItems(JSON.parse(storedCart));
+    } else {
+      // Optional: Set fakeCart only if nothing exists
+      setCartItems(fakeCart);
+      localStorage.setItem("cart", JSON.stringify(fakeCart));
+    }
   }, []);
-
+  
   const updateQuantity = (id, newQty) => {
     const updated = cartItems.map((item) =>
       item.id === id ? { ...item, quantity: newQty } : item
