@@ -13,6 +13,7 @@ export default function CheckoutPage() {
   const [payment, setPayment] = useState("card");
   const [submitted, setSubmitted] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+  const [appliedDiscount, setAppliedDiscount] = useState(0);
 
   // Load cart from localStorage
   useEffect(() => {
@@ -20,12 +21,22 @@ export default function CheckoutPage() {
     if (stored) {
       setCartItems(JSON.parse(stored));
     }
+  
+    const storedCoupon = localStorage.getItem("coupon");
+    if (storedCoupon) {
+      const { discount } = JSON.parse(storedCoupon);
+      setAppliedDiscount(discount);
+    }
   }, []);
+  
 
   const subtotal = cartItems.reduce((acc, item) => {
     const price = item.price * (1 - item.discount / 100);
     return acc + price * item.quantity;
   }, 0);
+  
+  const total = subtotal * (1 - appliedDiscount / 100);
+  
 
   const handlePlaceOrder = () => {
     if (!address.name || !address.street || !address.city || !address.zip) {
@@ -61,12 +72,13 @@ export default function CheckoutPage() {
         <PaymentOptions selected={payment} setSelected={setPayment} />
       </div>
 
-      <div className="mt-6 text-lg">
-        <h2 className="text-xl font-semibold mb-2">Order Summary</h2>
-        <p>Items Total: ${subtotal.toFixed(2)}</p>
-        <p>Shipping: Free</p>
-        <p className="font-bold text-xl">Total: ${subtotal.toFixed(2)}</p>
-      </div>
+        <div className="mt-6 text-lg">
+            <h2 className="text-xl font-semibold mb-2">Order Summary</h2>
+            <p>Items Total: ${subtotal.toFixed(2)}</p>
+            <p>Coupon Discount: {appliedDiscount}%</p>
+            <p className="font-bold text-xl">Total: ${total.toFixed(2)}</p>
+        </div>
+
 
       <button
         onClick={handlePlaceOrder}

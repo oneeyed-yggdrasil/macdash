@@ -57,21 +57,36 @@ export default function CartPage() {
   const handleApplyCoupon = () => {
     if (coupon === "MAC10") {
       setAppliedDiscount(10);
+      localStorage.setItem("coupon", JSON.stringify({ code: coupon, discount: 10 }));
     } else {
       alert("Invalid coupon");
     }
   };
+  
 
   const estimatedDate = new Date();
   estimatedDate.setDate(estimatedDate.getDate() + 3);
 
+  const handleRemove = (id) => {
+    const updated = cartItems.filter((item) => item.id !== id);
+    setCartItems(updated);
+    localStorage.setItem("cart", JSON.stringify(updated)); // Save to localStorage
+  };
+
+  
+  
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4">Your Cart</h1>
 
-      {cartItems.map((item) => (
-        <CartItem key={item.id} item={item} updateQuantity={updateQuantity} />
-      ))}
+        {cartItems.map((item) => (
+            <CartItem
+                key={item.id}
+                item={item}
+                updateQuantity={updateQuantity}
+                onRemove={handleRemove} // 
+            />
+        ))}
 
       <div className="mt-6">
         <input
