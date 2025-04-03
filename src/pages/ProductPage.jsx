@@ -9,6 +9,7 @@ const mockProducts = {
     discount: 10,
     specs: ["M3 Chip", "16GB RAM", "1TB SSD"],
     image: "/macbook.jpg",
+    category: "MacBook",
   },
   2: {
     id: 2,
@@ -18,6 +19,7 @@ const mockProducts = {
     discount: 5,
     specs: ["M1 Chip", "8GB RAM", "512GB SSD"],
     image: "/imac.jpg",
+    category: "iMac",
   },
   3: {
     id: 3,
@@ -27,6 +29,7 @@ const mockProducts = {
     discount: 0,
     specs: ["M2 Chip", "8GB RAM", "256GB SSD"],
     image: "/macmini.jpg",
+    category: "Mac Mini",
   },
 };
 
@@ -37,6 +40,28 @@ export default function ProductPage() {
   if (!product) return <div className="p-6">Product not found</div>;
 
   const discountedPrice = product.price * (1 - product.discount / 100);
+
+  const handleAddToCart = () => {
+    const storedCart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+    // Check if item already exists
+    const existing = storedCart.find((item) => item.id === product.id);
+
+    let updatedCart;
+    if (existing) {
+      updatedCart = storedCart.map((item) =>
+        item.id === product.id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      );
+    } else {
+      updatedCart = [...storedCart, { ...product, quantity: 1 }];
+    }
+
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    alert(`${product.name} added to cart `);
+    // Optionally: navigate("/cart");
+  };
 
   return (
     <div className="max-w-5xl mx-auto p-6 grid md:grid-cols-2 gap-10">
@@ -60,7 +85,10 @@ export default function ProductPage() {
           ))}
         </ul>
 
-        <button className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800">
+        <button
+          onClick={handleAddToCart}
+          className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
+        >
           Add to Cart
         </button>
       </div>
