@@ -29,6 +29,7 @@ export default function AuthForm({ type }) {
 
   return (
     <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded-xl shadow">
+    <img src="/macdash-logo.png" alt="MacDash" className="h-12 mx-auto mb-4" />
       <h2 className="text-2xl font-bold mb-4">{isLogin ? "Login" : "Register"}</h2>
       {error && <p className="text-red-500">{error}</p>}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
