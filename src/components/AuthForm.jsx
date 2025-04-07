@@ -8,10 +8,11 @@ export default function AuthForm({ type }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [name, setName] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!email || !password) {
+    if (!email || !password || (!isLogin && !name)) {
       setError("Please enter all fields");
       return;
     }
@@ -21,7 +22,7 @@ export default function AuthForm({ type }) {
       if (success) navigate("/");
       else setError("Invalid credentials");
     } else {
-      const success = registerUser(email, password);
+      const success = registerUser(email, password, name);
       if (success) navigate("/login");
       else setError("User already exists");
     }
@@ -33,6 +34,15 @@ export default function AuthForm({ type }) {
       <h2 className="text-2xl font-bold mb-4">{isLogin ? "Login" : "Register"}</h2>
       {error && <p className="text-red-500">{error}</p>}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {!isLogin && (
+          <input
+            type="text"
+            placeholder="Name"
+            className="p-2 border rounded"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        )}
         <input
           type="email"
           placeholder="Email"

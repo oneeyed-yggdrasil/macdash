@@ -1,7 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const user = JSON.parse(localStorage.getItem("currentUser"));
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    localStorage.removeItem("currentUser");
+    navigate("/login");
+  };
+
 
   return (
     <nav className="bg-white border-b shadow-md p-4 flex justify-between items-center">
@@ -19,15 +26,14 @@ export default function Navbar() {
             <Link to="/register" className="hover:underline">Register</Link>
           </>
         ) : (
-          <button
-            onClick={() => {
-              localStorage.removeItem("currentUser");
-              window.location.href = "/login";
-            }}
-            className="text-red-600 hover:underline"
-          >
-            Logout
-          </button>
+          <>
+            <span className="text-sm text-gray-600">
+              👋 Welcome, {user.name || user.email}
+            </span>
+            <button onClick={handleLogout} className="text-red-600 hover:underline">
+              Logout
+            </button>
+          </>
         )}
       </div>
     </nav>

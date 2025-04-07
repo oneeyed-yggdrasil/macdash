@@ -1,13 +1,14 @@
 // utils/auth.js
 
-export function registerUser(email, password) {
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const exists = users.find((u) => u.email === email);
-    if (exists) return false;
-    users.push({ email, password });
-    localStorage.setItem("users", JSON.stringify(users));
-    return true;
-  }
+export function registerUser(email, password, name) {
+  const users = JSON.parse(localStorage.getItem("users") || "[]");
+  const exists = users.find((u) => u.email === email);
+  if (exists) return false;
+  users.push({ email, password, name });
+  localStorage.setItem("users", JSON.stringify(users));
+  return true;
+}
+
   
   export function loginUser(email, password) {
     const users = JSON.parse(localStorage.getItem("users") || "[]");
